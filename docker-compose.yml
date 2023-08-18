@@ -1,7 +1,7 @@
 services:
-  a:
-    build: a
-    container_name: web-a
+  proxy-checker:
+    build: proxy-checker
+    container_name: proxy-checker
     expose:
       - "8000"
     environment:
