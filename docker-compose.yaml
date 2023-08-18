@@ -1,13 +1,13 @@
 a:
   build: a
   environment:
-    VIRTUAL_HOST: a.domain.com
+    VIRTUAL_HOST: a.noboroto.id.vn
   restart: always
 
 b:
   build: b
   environment:
-    VIRTUAL_HOST:  b.domain.com
+    VIRTUAL_HOST:  b.noboroto.id.vn
   restart: always
 
 nginx-proxy:
