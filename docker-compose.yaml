@@ -6,7 +6,6 @@ services:
       - "8000"
     environment:
       - VIRTUAL_HOST=a.noboroto.id.vn
-      - VIRTUAL_PORT=8000
     restart: always
 
   b:
@@ -16,7 +15,14 @@ services:
       - "8000"
     environment:
       - VIRTUAL_HOST=b.noboroto.id.vn
-      - VIRTUAL_PORT=8000
+    restart: always
+  
+  whoami:
+    image: jwilder/whoami
+    expose:
+      - "8000"
+    environment:
+      - VIRTUAL_HOST=noboroto.id.vn
     restart: always
 
   nginx-proxy:
