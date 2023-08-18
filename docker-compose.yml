@@ -11,7 +11,7 @@ services:
 
   calibre-web:
     image: lscr.io/linuxserver/calibre:arm64v8-latest
-    container_name: calibre
+    container_name: calibre-deployed
     security_opt:
       - seccomp:unconfined #optional
     environment:
@@ -20,12 +20,11 @@ services:
       - TZ=Europe/London
       - PASSWORD= #optional
       - CLI_ARGS= #optional
+      - VIRTUAL_HOST=calibre.noboroto.id.vn
     volumes:
       - /home/david0403/Github/calibre-server/config:/config
     expose:
       - "2080"
-    environment:
-      - VIRTUAL_HOST=calibre.noboroto.id.vn
     restart: unless-stopped
 
 
