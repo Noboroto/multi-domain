@@ -1,0 +1,40 @@
+services:
+  a:
+    build: a
+    container_name: web-a
+    expose:
+      - "8000"
+    environment:
+      - VIRTUAL_HOST=a.noboroto.id.vn
+      - VIRTUAL_PORT=8000
+    restart: always
+
+  calibre-web:
+    image: lscr.io/linuxserver/calibre:arm64v8-latest
+    container_name: calibre
+    security_opt:
+      - seccomp:unconfined #optional
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/London
+      - PASSWORD= #optional
+      - CLI_ARGS= #optional
+    volumes:
+      - /home/david0403/Github/calibre-server/config:/config
+    expose:
+      - "2080"
+    environment:
+      - VIRTUAL_HOST=calibre.noboroto.id.vn
+    restart: unless-stopped
+
+
+  nginx-proxy:
+    image: nginxproxy/nginx-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+    restart: always
+    privileged: true
