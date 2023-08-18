@@ -5,7 +5,7 @@ services:
     expose:
       - "8000"
     environment:
-      - VIRTUAL_HOST: a.noboroto.id.vn
+      VIRTUAL_HOST: "a.noboroto.id.vn"
     restart: always
 
   b:
@@ -14,7 +14,7 @@ services:
     expose:
       - "8000"
     environment:
-      - VIRTUAL_HOST:  b.noboroto.id.vn
+      VIRTUAL_HOST: "b.noboroto.id.vn"
     restart: always
 
   nginx-proxy:
