@@ -7,29 +7,30 @@ services:
     environment:
       - VIRTUAL_HOST=a.noboroto.id.vn
     restart: always
-  
+
   calibre-web:
     image: lscr.io/linuxserver/calibre:arm64v8-latest
     container_name: calibre-deployed
     security_opt:
       - seccomp:unconfined #optional
     environment:
-      - VIRTUAL_HOST=calibre.noboroto.id.vn,calibre-ui.noboroto.id.vn
-      - VIRTUAL_PORT=8081,8080
       - PUID=1000
       - PGID=1000
       - TZ=Asia/Ho_Chi_Minh
       - PASSWORD= #optional
       - CLI_ARGS= #optional
+      - VIRTUAL_HOST=calibre.noboroto.id.vn,calibre-ui.noboroto.id.vn
+      - VIRTUAL_PORT=8081,8080
     volumes:
       - /home/david0403/Github/calibre-server/config:/config
     expose:
-      - "8080"
       - "8081"
     restart: unless-stopped
 
   nginx-proxy:
     image: nginxproxy/nginx-proxy
+    depends_on: 
+      - calibre-web
     ports:
       - "80:80"
       - "443:443"
