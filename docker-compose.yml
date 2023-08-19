@@ -58,12 +58,6 @@ volumes:
       device: ./certs
       o: bind
       type: local
-  htmldir:
-    driver: local
-    driver_opts:
-      device: ./htmldir
-      o: bind
-      type: local
   vhost:
     driver: local
     driver_opts:
@@ -74,5 +68,11 @@ volumes:
     driver: local
     driver_opts:
       device: ./acme
+      o: bind
+      type: local
+  htmldir:
+    driver: local
+    driver_opts:
+      device: ./htmldir
       o: bind
       type: local
