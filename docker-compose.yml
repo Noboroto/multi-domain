@@ -35,18 +35,3 @@ services:
       - HTTPS_METHOD=nohttps
     restart: always
     privileged: true
-
-  ssl-auto-renew:
-    image: nginxproxy/acme-companion
-    depends_on:
-      - nginx-proxy
-    volumes_from:
-      - nginx-proxy
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./acme:/etc/acme.sh
-    environment:
-      - DEFAULT_EMAIL=rockets-wrangle.0m@icloud.com
-      - CF_Token=C6gudpLtFimTqQEXGifJjA-WJ_hX74yIcQlM0bj_
-      - CF_Account_ID=6e2952f797ac3b5151cc6aaf78ea7de0
-      - CF_Zone_ID=942afbaba0cd2f22f342dbe104044701
