@@ -7,17 +7,8 @@ services:
     environment:
       - VIRTUAL_HOST=a.noboroto.id.vn
     restart: unless-stopped
-
-  iot-fire-alarm-frontend:
-    build: /home/david0403/Github/IOT-Fire-Alarm/frontend
-    expose:
-      - "80"
-    restart: unless-stopped
-    ports:
-      - "8266:80"
-    environment:
-      - VIRTUAL_HOST=fire.noboroto.id.vn
-      - VIRTUAL_PORT=80
+    networks:
+      - proxynet
 
   nginx-proxy:
     image: nginxproxy/nginx-proxy
@@ -33,3 +24,9 @@ services:
       - ./html:/usr/share/nginx/html 
     restart: always
     privileged: true
+    
+    networks:
+      - proxynet
+networks:
+  proxynet:
+    name: proxy_net
