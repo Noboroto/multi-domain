@@ -61,7 +61,7 @@ volumes:
   html:
     driver: local
     driver_opts:
-      device: ./html
+      device: ./htmldir
       o: bind
       type: local
   vhost:
