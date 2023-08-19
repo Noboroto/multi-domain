@@ -30,7 +30,7 @@ services:
       - /var/run/docker.sock:/tmp/docker.sock:ro
       - certs:/etc/nginx/certs
       - vhost:/etc/nginx/vhost.d 
-      - html:/usr/share/nginx/html 
+      - htmldir:/usr/share/nginx/html 
     # environment:
     #   - HTTPS_METHOD=noredirect
     restart: always
@@ -58,7 +58,7 @@ volumes:
       device: ./certs
       o: bind
       type: local
-  html:
+  htmldir:
     driver: local
     driver_opts:
       device: ./htmldir
