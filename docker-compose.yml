@@ -57,18 +57,22 @@ volumes:
     driver_opts:
       device: ./certs
       o: bind
+      type: local
   html:
     driver: local
     driver_opts:
       device: ./html
       o: bind
+      type: local
   vhost:
     driver: local
     driver_opts:
       device: ./vhost
       o: bind
+      type: local
   acme:
     driver: local
     driver_opts:
       device: ./acme
       o: bind
+      type: local
