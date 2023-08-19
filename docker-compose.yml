@@ -28,9 +28,9 @@ services:
       - "443:443"
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
-      - ./certs:/etc/nginx/certs
-      - ./vhost:/etc/nginx/vhost.d 
-      - ./html:/usr/share/nginx/html 
+      - certs:/etc/nginx/certs
+      - vhost:/etc/nginx/vhost.d 
+      - html:/usr/share/nginx/html 
     # environment:
     #   - HTTPS_METHOD=noredirect
     restart: always
@@ -44,9 +44,30 @@ services:
       - nginx-proxy
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./acme:/etc/acme.sh
+      - acme:/etc/acme.sh
     environment:
       - DEFAULT_EMAIL=rockets-wrangle.0m@icloud.com
       - CF_Token=C6gudpLtFimTqQEXGifJjA-WJ_hX74yIcQlM0bj_
       - CF_Account_ID=6e2952f797ac3b5151cc6aaf78ea7de0
       - CF_Zone_ID=942afbaba0cd2f22f342dbe104044701
+volumes:
+  certs:
+    driver: local
+      driver_opts:
+        device: ./certs
+        o: bind
+  html:
+    driver: local
+      driver_opts:
+        device: ./html
+        o: bind
+  vhost:
+    driver: local
+      driver_opts:
+        device: ./vhost
+        o: bind
+  acme:
+    driver: local
+      driver_opts:
+        device: ./acme
+        o: bind
