@@ -33,4 +33,3 @@ services:
       - ./html:/usr/share/nginx/html 
     restart: always
     privileged: true
-    network:
