@@ -30,7 +30,7 @@ services:
       - /var/run/docker.sock:/tmp/docker.sock:ro
       - certs:/etc/nginx/certs
       - vhost:/etc/nginx/vhost.d 
-      - html:/usr/share/nginx/html 
+      - ./html:/usr/share/nginx/html 
     # environment:
     #   - HTTPS_METHOD=noredirect
     restart: always
@@ -70,4 +70,3 @@ volumes:
       device: ./acme
       o: bind
       type: local
-  html:
