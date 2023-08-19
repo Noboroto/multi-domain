@@ -17,9 +17,9 @@ services:
       - "443:443"
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
-      - certs:/etc/nginx/certs
-      - vhost:/etc/nginx/vhost.d 
-      - html:/usr/share/nginx/html 
+      - ./certs:/etc/nginx/certs
+      - ./vhost:/etc/nginx/vhost.d 
+      - ./html:/usr/share/nginx/html 
     environment:
       - HTTPS_METHOD=noredirect
     restart: always
@@ -33,6 +33,6 @@ services:
       - nginx-proxy
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - acme:/etc/acme.sh
+      - ./acme:/etc/acme.sh
     environment:
       - env "DEFAULT_EMAIL=rockets-wrangle.0m@icloud.com"
