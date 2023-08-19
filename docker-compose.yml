@@ -31,7 +31,5 @@ services:
       - ./certs:/etc/nginx/certs
       - ./vhost:/etc/nginx/vhost.d 
       - ./html:/usr/share/nginx/html 
-    environment:
-      - HTTPS_METHOD=nohttps
     restart: always
     privileged: true
