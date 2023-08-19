@@ -59,20 +59,5 @@ volumes:
       o: bind
       type: local
   vhost:
-    driver: local
-    driver_opts:
-      device: ${pwd}/vhost
-      o: bind
-      type: local
   acme:
-    driver: local
-    driver_opts:
-      device: ${pwd}/acme
-      o: bind
-      type: local
   htmldir:
-    driver: local
-    driver_opts:
-      device: ${pwd}/htmldir
-      o: bind
-      type: local
