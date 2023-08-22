@@ -1,14 +1,14 @@
 services:
-  proxy-checker:
-    build: proxy-checker
-    container_name: proxy-checker
-    expose:
-      - "8000"
-    environment:
-      - VIRTUAL_HOST=a.noboroto.id.vn
-    restart: unless-stopped
-    networks:
-      - proxynet
+  # proxy-checker:
+  #   build: proxy-checker
+  #   container_name: proxy-checker
+  #   expose:
+  #     - "8000"
+  #   environment:
+  #     - VIRTUAL_HOST=a.noboroto.id.vn
+  #   restart: unless-stopped
+  #   networks:
+  #     - proxynet
 
   nginx-proxy:
     image: nginxproxy/nginx-proxy
