@@ -12,20 +12,6 @@ services:
     networks:
       - proxynet
 
-  proxy-path-checker:
-    build: path-domain
-    container_name: proxy-path-checker
-    expose:
-      - "8000"
-    environment:
-      - VIRTUAL_HOST=david0403.site
-      - VIRTUAL_PATH=/b
-      - VIRTUAL_PROTO=http
-      - VIRTUAL_HTTP=8000
-    restart: unless-stopped
-    networks:
-      - proxynet
-
   nginx-proxy:
     image: nginxproxy/nginx-proxy
     container_name: multi-domain-proxy
