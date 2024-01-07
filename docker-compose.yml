@@ -43,7 +43,7 @@ services:
       - proxy-checker
       - whoami
       - proxy-path-checker
-    image: nginxproxy/nginx-proxy
+    image: nginxproxy/nginx-proxy:alpine
     container_name: multi-domain-proxy
     ports:
       - "80:80"
