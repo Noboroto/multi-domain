@@ -6,10 +6,18 @@ services:
       - "8000"
     environment:
       - VIRTUAL_HOST=david0403.site
-      - VIRTUAL_HTTP=8000
+      - VIRTUAL_PORT=8000
     restart: unless-stopped
     networks:
       - proxynet
+
+  whoami:
+    image: jwilder/whoami
+    expose:
+      - "8000"
+    environment:
+      - VIRTUAL_HOST=david0403.site/whoami
+      - VIRTUAL_PORT=8000
 
   proxy-path-checker:
     build: path-domain
@@ -19,7 +27,8 @@ services:
     environment:
       - VIRTUAL_HOST=david0403.site
       - VIRTUAL_PATH=/b
-      - VIRTUAL_HTTP=8000
+      - VIRTUAL_PORT=8000
+
     restart: unless-stopped
     networks:
       - proxynet
