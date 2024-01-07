@@ -14,7 +14,7 @@ services:
 
   proxy-path-checker:
     build: path-domain
-    container_name: proxy-checker
+    container_name: proxy-path-checker
     expose:
       - "8000"
     environment:
