@@ -14,6 +14,7 @@ services:
 
   nginx-proxy:
     image: nginxproxy/nginx-proxy
+    container_name: multi-domain-proxy
     ports:
       - "80:80"
       - "443:443"
