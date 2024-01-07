@@ -31,3 +31,4 @@ services:
 networks:
   proxynet:
     name: proxy_net
+    external: true
