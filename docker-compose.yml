@@ -1,66 +1,14 @@
-services:
-  proxy-checker:
-    build: proxy-checker
-    container_name: proxy-checker
-    ports:
-      - "8023:80"
-    expose:
-      - "80"
-    environment:
-      # - VIRTUAL_HOST=david0403.site
-      # - VIRTUAL_PORT=8000
-      # - HTTP_PORT=8000
-      - VIRTUAL_HOST=david0403.site
-      - VIRTUAL_PORT=8023
-    restart: unless-stopped
-    networks:
-      - proxynet
+version: '2'
 
-  proxy-path-checker:
-    build: path-domain
-    container_name: proxy-path-checker
+services:
+  nginx-proxy:
+    image: jwilder/nginx-proxy
     ports:
-      - "8026:80"
-    expose:
-      - "80"
-    environment:
-      - VIRTUAL_HOST=david0403.site
-      - VIRTUAL_PATH=/subpath
-      - VIRTUAL_PORT=80
-    restart: unless-stopped
-    networks:
-      - proxynet
+      - "80:80"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
 
   whoami:
     image: jwilder/whoami
     environment:
       - VIRTUAL_HOST=whoami.local
-    networks:
-      - proxynet
-
-  nginx-proxy:
-    depends_on:
-      - whoami
-      - proxy-checker
-      - proxy-path-checker
-    image: jwilder/nginx-proxy:alpine
-    container_name: multi-domain-proxy
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - /var/run/docker.sock:/tmp/docker.sock:ro
-      - ./certs:/etc/nginx/certs
-      - ./vhost:/etc/nginx/vhost.d 
-      - ./html:/usr/share/nginx/html
-    environment:
-      - DEFAULT_HOST=david0403.site
-      - SSL_POLICY=Mozilla-Modern
-    restart: unless-stopped
-    privileged: true
-    networks:
-      - proxynet
-
-networks:
-  proxynet:
-    name: proxy_net_test
