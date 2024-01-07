@@ -33,7 +33,7 @@ services:
   proxy-path-checker:
     build: path-domain
     container_name: proxy-path-checker
-        ports:
+    ports:
       - "8026:80"
     expose:
       - "80"
