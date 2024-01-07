@@ -2,9 +2,8 @@ services:
   proxy-checker:
     build: proxy-checker
     container_name: proxy-checker
-    ports:
-      - 8023:80
-      - 8024:8080
+    expose:
+      - "80"
     environment:
       # - VIRTUAL_HOST=david0403.site
       # - VIRTUAL_PORT=8000
@@ -21,8 +20,6 @@ services:
     environment:
       - VIRTUAL_HOST=david0403.site
       - VIRTUAL_PATH=/whoami
-      - VIRTUAL_PORT=8000
-      - HTTP_PORT=8000
     networks:
       - proxynet
 
@@ -30,12 +27,10 @@ services:
     build: path-domain
     container_name: proxy-path-checker
     expose:
-      - "8000"
+      - "80"
     environment:
       - VIRTUAL_HOST=david0403.site
-      - VIRTUAL_PATH=/b
-      - VIRTUAL_PORT=8000
-      - HTTP_PORT=8000
+      - VIRTUAL_PATH=/sub
     restart: unless-stopped
     networks:
       - proxynet
