@@ -1,19 +1,19 @@
 services:
-  # proxy-checker:
-  #   build: proxy-checker
-  #   container_name: proxy-checker
-  #   expose:
-  #     - "8000"
-  #   environment:
-  #     - VIRTUAL_HOST=a.noboroto.id.vn
-  #   restart: unless-stopped
-  #   networks:
-  #     - proxynet
+  proxy-checker:
+    build: proxy-checker
+    container_name: proxy-checker
+    expose:
+      - "8000"
+    environment:
+      - VIRTUAL_HOST=david0403.site
+      - VIRTUAL_PROTO=https
+      - VIRTUAL_HTTPS=8000
+    restart: unless-stopped
+    networks:
+      - proxynet
 
   nginx-proxy:
     image: nginxproxy/nginx-proxy
-    depends_on: 
-      - calibre-web
     ports:
       - "80:80"
       - "443:443"
@@ -22,11 +22,11 @@ services:
       - ./certs:/etc/nginx/certs
       - ./vhost:/etc/nginx/vhost.d 
       - ./html:/usr/share/nginx/html 
-    restart: always
+    restart: unless-stopped
     privileged: true
-    
     networks:
       - proxynet
+
 networks:
   proxynet:
     name: proxy_net
