@@ -7,6 +7,7 @@ services:
     environment:
       - VIRTUAL_HOST=david0403.site
       - VIRTUAL_PORT=8000
+      - HTTP_PORT=8000
     restart: unless-stopped
     networks:
       - proxynet
@@ -19,6 +20,7 @@ services:
       - VIRTUAL_HOST=david0403.site
       - VIRTUAL_PATH=/whoami
       - VIRTUAL_PORT=8000
+      - HTTP_PORT=8000
     networks:
       - proxynet
 
@@ -31,11 +33,16 @@ services:
       - VIRTUAL_HOST=david0403.site
       - VIRTUAL_PATH=/b
       - VIRTUAL_PORT=8000
+      - HTTP_PORT=8000
     restart: unless-stopped
     networks:
       - proxynet
 
   nginx-proxy:
+    depend_on:
+      - proxy-checker
+      - whoami
+      - proxy-path-checker
     image: nginxproxy/nginx-proxy
     container_name: multi-domain-proxy
     ports:
