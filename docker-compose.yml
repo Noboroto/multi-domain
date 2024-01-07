@@ -3,8 +3,8 @@ services:
     build: proxy-checker
     container_name: proxy-checker
     ports:
-      - 80:8023
-      - 8080:8024
+      - 8023:80
+      - 8024:8080
     environment:
       # - VIRTUAL_HOST=david0403.site
       # - VIRTUAL_PORT=8000
