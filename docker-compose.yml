@@ -2,8 +2,9 @@ services:
   proxy-checker:
     build: proxy-checker
     container_name: proxy-checker
-    expose:
-      - "80"
+    ports:
+      - 80:8023
+      - 8080:8024
     environment:
       # - VIRTUAL_HOST=david0403.site
       # - VIRTUAL_PORT=8000
