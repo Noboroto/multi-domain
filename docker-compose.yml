@@ -2,6 +2,8 @@ services:
   proxy-checker:
     build: proxy-checker
     container_name: proxy-checker
+    ports:
+      - "8000:8023"
     expose:
       - "8000"
     environment:
