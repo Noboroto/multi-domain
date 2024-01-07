@@ -39,7 +39,7 @@ services:
       - proxynet
 
   nginx-proxy:
-    depend_on:
+    depends_on:
       - proxy-checker
       - whoami
       - proxy-path-checker
