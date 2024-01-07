@@ -31,11 +31,17 @@ services:
     networks:
       - proxynet
 
+  whoami:
+    image: jwilder/whoami
+    environment:
+      - VIRTUAL_HOST=whoami.local
+
   nginx-proxy:
     depends_on:
+      - whoami
       - proxy-checker
       - proxy-path-checker
-    image: nginxproxy/nginx-proxy:alpine
+    image: jwilder/nginx-proxy:alpine
     container_name: multi-domain-proxy
     ports:
       - "80:80"
