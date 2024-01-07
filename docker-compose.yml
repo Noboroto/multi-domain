@@ -8,7 +8,7 @@ services:
       # - VIRTUAL_HOST=david0403.site
       # - VIRTUAL_PORT=8000
       # - HTTP_PORT=8000
-      - VIRTUAL_HOST=noboroto.id.vn
+      - VIRTUAL_HOST=david0403.site
     restart: unless-stopped
     networks:
       - proxynet
@@ -47,7 +47,8 @@ services:
     image: nginxproxy/nginx-proxy:alpine
     container_name: multi-domain-proxy
     ports:
-      - "80:443"
+      - "80:80"
+      - "443:443"
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
       - ./certs:/etc/nginx/certs
