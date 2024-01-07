@@ -6,7 +6,6 @@ services:
       - "8000"
     environment:
       - VIRTUAL_HOST=david0403.site
-      - VIRTUAL_PROTO=http
       - VIRTUAL_HTTP=8000
     restart: unless-stopped
     networks:
@@ -20,7 +19,6 @@ services:
     environment:
       - VIRTUAL_HOST=david0403.site
       - VIRTUAL_PATH=/b
-      - VIRTUAL_PROTO=http
       - VIRTUAL_HTTP=8000
     restart: unless-stopped
     networks:
