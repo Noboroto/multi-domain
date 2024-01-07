@@ -19,6 +19,8 @@ services:
       - VIRTUAL_HOST=david0403.site
       - VIRTUAL_PATH=/whoami
       - VIRTUAL_PORT=8000
+    networks:
+      - proxynet
 
   proxy-path-checker:
     build: path-domain
