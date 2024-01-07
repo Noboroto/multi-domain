@@ -5,9 +5,12 @@ services:
     expose:
       - "8000"
     environment:
+      # - VIRTUAL_HOST=david0403.site
+      # - VIRTUAL_PORT=8000
+      # - HTTP_PORT=8000
       - VIRTUAL_HOST=david0403.site
-      - VIRTUAL_PORT=8000
-      - HTTP_PORT=8000
+      #- VIRTUAL_PROTO=https
+      #- VIRTUAL_HTTPS=8000
     restart: unless-stopped
     networks:
       - proxynet
