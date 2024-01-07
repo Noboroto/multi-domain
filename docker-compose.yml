@@ -35,6 +35,8 @@ services:
     image: jwilder/whoami
     environment:
       - VIRTUAL_HOST=whoami.local
+    networks:
+      - proxynet
 
   nginx-proxy:
     depends_on:
