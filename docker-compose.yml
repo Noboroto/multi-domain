@@ -12,21 +12,8 @@ services:
       # - HTTP_PORT=8000
       - VIRTUAL_HOST=david0403.site
       - VIRTUAL_PORT=80
+      - HTTP_PORT=80
     restart: unless-stopped
-    networks:
-      - proxynet
-
-  whoami:
-    image: jwilder/whoami
-    ports:
-      - "8024:8000"
-      - "8025:80"
-    expose:
-      - "8000"
-    environment:
-      - VIRTUAL_HOST=david0403.site
-      - VIRTUAL_PATH=/whoami
-      - VIRTUAL_PORT=80
     networks:
       - proxynet
 
@@ -39,8 +26,9 @@ services:
       - "80"
     environment:
       - VIRTUAL_HOST=david0403.site
-      - VIRTUAL_PATH=/sub
+      - VIRTUAL_PATH=/subpath
       - VIRTUAL_PORT=80
+      - HTTP_PORT=80
     restart: unless-stopped
     networks:
       - proxynet
@@ -48,7 +36,6 @@ services:
   nginx-proxy:
     depends_on:
       - proxy-checker
-      - whoami
       - proxy-path-checker
     image: nginxproxy/nginx-proxy:alpine
     container_name: multi-domain-proxy
