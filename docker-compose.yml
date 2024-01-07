@@ -16,7 +16,8 @@ services:
     expose:
       - "8000"
     environment:
-      - VIRTUAL_HOST=david0403.site/whoami
+      - VIRTUAL_HOST=david0403.site
+      - VIRTUAL_PATH=/whoami
       - VIRTUAL_PORT=8000
 
   proxy-path-checker:
