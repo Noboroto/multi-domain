@@ -12,7 +12,6 @@ services:
       # - HTTP_PORT=8000
       - VIRTUAL_HOST=david0403.site
       - VIRTUAL_PORT=80
-      - HTTP_PORT=80
     restart: unless-stopped
     networks:
       - proxynet
@@ -28,7 +27,6 @@ services:
       - VIRTUAL_HOST=david0403.site
       - VIRTUAL_PATH=/subpath
       - VIRTUAL_PORT=80
-      - HTTP_PORT=80
     restart: unless-stopped
     networks:
       - proxynet
@@ -46,7 +44,10 @@ services:
       - /var/run/docker.sock:/tmp/docker.sock:ro
       - ./certs:/etc/nginx/certs
       - ./vhost:/etc/nginx/vhost.d 
-      - ./html:/usr/share/nginx/html 
+      - ./html:/usr/share/nginx/html
+    environment:
+      - DEFAULT_HOST=david0403.site
+      - SSL_POLICY=Mozilla-Modern
     restart: unless-stopped
     privileged: true
     networks:
