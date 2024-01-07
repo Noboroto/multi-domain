@@ -52,5 +52,4 @@ services:
 
 networks:
   proxynet:
-    name: proxy_net
-    external: true
+    name: proxy_net_test
