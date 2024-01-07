@@ -8,9 +8,7 @@ services:
       # - VIRTUAL_HOST=david0403.site
       # - VIRTUAL_PORT=8000
       # - HTTP_PORT=8000
-      - VIRTUAL_HOST=david0403.site
-      #- VIRTUAL_PROTO=https
-      #- VIRTUAL_HTTPS=8000
+      - VIRTUAL_HOST=noboroto.id.vn
     restart: unless-stopped
     networks:
       - proxynet
