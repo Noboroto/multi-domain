@@ -6,8 +6,8 @@ services:
       - "8000"
     environment:
       - VIRTUAL_HOST=david0403.site
-      - VIRTUAL_PROTO=https
-      - VIRTUAL_HTTPS=8000
+      - VIRTUAL_PROTO=http
+      - VIRTUAL_HTTP=8000
     restart: unless-stopped
     networks:
       - proxynet
