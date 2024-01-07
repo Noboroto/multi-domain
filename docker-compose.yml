@@ -1,57 +1,15 @@
 services:
-  proxy-checker:
-    build: proxy-checker
-    container_name: proxy-checker
-    expose:
-      - "8000"
-    environment:
-      - VIRTUAL_HOST=david0403.site
-      - VIRTUAL_PORT=8000
-    restart: unless-stopped
-    networks:
-      - proxynet
+  nginx-proxy:
+    image: nginxproxy/nginx-proxy
+    ports:
+      - "80:80"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
 
   whoami:
     image: jwilder/whoami
     expose:
       - "8000"
     environment:
-      - VIRTUAL_HOST=david0403.site
-      - VIRTUAL_PATH=/whoami
+      - VIRTUAL_HOST=whoami.example
       - VIRTUAL_PORT=8000
-    networks:
-      - proxynet
-
-  proxy-path-checker:
-    build: path-domain
-    container_name: proxy-path-checker
-    expose:
-      - "8000"
-    environment:
-      - VIRTUAL_HOST=david0403.site
-      - VIRTUAL_PATH=/b
-      - VIRTUAL_PORT=8000
-
-    restart: unless-stopped
-    networks:
-      - proxynet
-
-  nginx-proxy:
-    image: nginxproxy/nginx-proxy
-    container_name: multi-domain-proxy
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - /var/run/docker.sock:/tmp/docker.sock:ro
-      - ./certs:/etc/nginx/certs
-      - ./vhost:/etc/nginx/vhost.d 
-      - ./html:/usr/share/nginx/html 
-    restart: unless-stopped
-    privileged: true
-    networks:
-      - proxynet
-
-networks:
-  proxynet:
-    name: proxy_net_test
