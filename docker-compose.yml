@@ -1,14 +1,26 @@
-version: '2'
-
+version: '3'
 services:
-  nginx-proxy:
-    image: jwilder/nginx-proxy
+  app:
+    image: 'jc21/nginx-proxy-manager:latest'
     ports:
-      - "80:80"
+      - '80:80'
+      - '81:81'
+      - '443:443'
     volumes:
-      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - ./config.json:/app/config/production.json
+      - ./data:/data
+      - ./letsencrypt:/etc/letsencrypt
+    restart: unless-stopped
+    depends_on:
+      - db
 
-  whoami:
-    image: jwilder/whoami
+  db:
+    image: 'yobasystems/alpine-mariadb:arm64v8'
     environment:
-      - VIRTUAL_HOST=whoami.local
+      MYSQL_ROOT_PASSWORD: 'npm'
+      MYSQL_DATABASE: 'npm'
+      MYSQL_USER: 'npm'
+      MYSQL_PASSWORD: 'npm'
+    volumes:
+      - ./data/mysql:/var/lib/mysql
+    restart: unless-stopped
