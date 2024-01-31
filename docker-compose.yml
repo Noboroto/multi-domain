@@ -31,7 +31,7 @@ services:
       - db
 
   db:
-    image: 'yobasystems/alpine-mariadb:arm64v8'
+    image: 'yobasystems/alpine-mariadb:latest'
     environment:
       MYSQL_ROOT_PASSWORD: 'npm'
       MYSQL_DATABASE: 'npm'
