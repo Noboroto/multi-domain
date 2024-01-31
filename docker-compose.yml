@@ -39,3 +39,8 @@ services:
     volumes:
       - ./data/mysql:/var/lib/mysql
     restart: unless-stopped
+
+networks:
+  default:
+    name: multi-domain
+    external: true
