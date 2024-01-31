@@ -41,7 +41,7 @@ services:
     restart: unless-stopped
 
   portainer:
-    name: portainer
+    container_name: portainer
     image: portainer/portainer-ce
     restart: always
     expose:
