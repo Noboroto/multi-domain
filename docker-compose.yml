@@ -53,7 +53,7 @@ services:
       - portainer_data:/data
 
   cadvisor:
-    image: gcr.io/google-containers/cadvisor:latest
+    image: gcr.io/cadvisor/cadvisor:latest
     container_name: cadvisor
     expose:
     - 8080
