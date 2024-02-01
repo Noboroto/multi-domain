@@ -73,7 +73,6 @@ services:
     - 9090
     command:
     - --config.file=/etc/prometheus/prometheus.yml
-    - --storage.local.path=/prometheus
     volumes:
     - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
     - ./prometheus/data/config:/etc/prometheus/
