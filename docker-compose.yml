@@ -79,6 +79,7 @@ services:
 
   grafana:
     image: grafana/grafana
+    user: "0"
     container_name: grafana
     privileged: true
     expose:
