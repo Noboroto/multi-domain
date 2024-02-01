@@ -84,7 +84,7 @@ services:
     expose:
     - 9000:3000
     volumes:
-    - ./data:/var/lib/grafana
+    - ./grafana/data:/var/lib/grafana
     restart: always
     depends_on:
     - prometheus
