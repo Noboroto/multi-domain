@@ -67,6 +67,7 @@ services:
   prometheus:
     image: prom/prometheus:latest
     container_name: prometheus
+    privileged: true
     expose:
     - 9090
     command:
@@ -79,6 +80,7 @@ services:
   grafana:
     image: grafana/grafana
     container_name: grafana
+    privileged: true
     expose:
     - 9000:3000
     volumes:
