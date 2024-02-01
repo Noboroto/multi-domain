@@ -54,6 +54,7 @@ services:
 
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:latest
+    user: "0"
     container_name: cadvisor
     expose:
     - 8080
@@ -67,6 +68,7 @@ services:
 
   prometheus:
     image: prom/prometheus:latest
+    user: "0"
     container_name: prometheus
     privileged: true
     expose:
@@ -84,6 +86,7 @@ services:
   
   node-exporter:
     image: prom/node-exporter:latest
+    user: "0"
     container_name: monitoring_node_exporter
     restart: unless-stopped
     expose:
