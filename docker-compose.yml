@@ -81,6 +81,13 @@ services:
     restart: unless-stopped
     depends_on:
     - cadvisor
+  
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: monitoring_node_exporter
+    restart: unless-stopped
+    expose:
+      - 9100
 
   grafana:
     image: grafana/grafana
