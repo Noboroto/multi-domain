@@ -83,7 +83,7 @@ services:
     container_name: grafana
     privileged: true
     expose:
-    - 9000:3000
+    - 3000
     volumes:
     - ./grafana/data:/var/lib/grafana
     restart: always
