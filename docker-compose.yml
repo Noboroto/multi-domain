@@ -46,7 +46,9 @@ services:
     image: portainer/portainer-ce
     restart: always
     expose:
+      - 8000
       - 9000
+      - 9443
     command: -H unix:///var/run/docker.sock
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
