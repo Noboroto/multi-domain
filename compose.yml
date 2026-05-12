@@ -72,12 +72,14 @@ services:
     image: prom/prometheus:latest
     user: "0"
     container_name: prometheus
-    privileged: true
+    privileged: false
     expose:
     - 9090
     command:
     - --config.file=/etc/prometheus/prometheus.yml
     - --storage.tsdb.path=/prometheus
+    - --storage.tsdb.retention.time=7d
+    - --storage.tsdb.retention.size=2GB
     volumes:
     - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
     - ./prometheus/data/config:/etc/prometheus/
@@ -98,7 +100,7 @@ services:
     image: grafana/grafana
     user: "0"
     container_name: grafana
-    privileged: true
+    privileged: false
     expose:
     - 3000
     volumes:

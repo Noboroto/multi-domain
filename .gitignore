@@ -1,1 +1,8 @@
 **/.DS_Store
+
+# Runtime data (do not commit — contains secrets, DBs, certs)
+data/
+grafana/
+letsencrypt/
+prometheus/
+*.bak
