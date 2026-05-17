@@ -103,6 +103,9 @@ services:
     privileged: false
     expose:
     - 3000
+    environment:
+    - GF_SERVER_ROOT_URL=https://monitor.noboroto.id.vn
+    - GF_SERVER_SERVE_FROM_SUB_PATH=false
     volumes:
     - ./grafana/data:/var/lib/grafana
     restart: always
