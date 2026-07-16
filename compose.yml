@@ -16,7 +16,7 @@ services:
 
   app:
     container_name: proxy-manager
-    image: 'jc21/nginx-proxy-manager:2.15.1'
+    image: 'jc21/nginx-proxy-manager:latest'
     ports:
       - '80:80'
       - '8181:81'
@@ -30,7 +30,7 @@ services:
       - db
 
   db:
-    image: 'yobasystems/alpine-mariadb:11.4.9'
+    image: 'yobasystems/alpine-mariadb:latest'
     environment:
       MYSQL_ROOT_PASSWORD: 'npm'
       MYSQL_DATABASE: 'npm'
@@ -42,7 +42,7 @@ services:
 
   portainer:
     container_name: portainer
-    image: portainer/portainer-ee:2.39.5
+    image: portainer/portainer-ee:lts
     restart: always
     expose:
       - 8000
@@ -54,7 +54,7 @@ services:
       - portainer_data:/data
 
   cadvisor:
-    image: gcr.io/cadvisor/cadvisor:v0.55.1
+    image: gcr.io/cadvisor/cadvisor:latest
     user: "0"
     container_name: cadvisor
     expose:
@@ -68,7 +68,7 @@ services:
     - /var/lib/docker/:/var/lib/docker:ro
 
   prometheus:
-    image: prom/prometheus:v3.13.1
+    image: prom/prometheus:latest
     user: "0"
     container_name: prometheus
     privileged: false
@@ -88,7 +88,7 @@ services:
     - cadvisor
   
   node-exporter:
-    image: prom/node-exporter:v1.12.1
+    image: prom/node-exporter:latest
     user: "0"
     container_name: monitoring_node_exporter
     restart: unless-stopped
@@ -96,7 +96,7 @@ services:
       - 9100
 
   grafana:
-    image: grafana/grafana:13.0.3
+    image: grafana/grafana:latest
     user: "0"
     container_name: grafana
     privileged: false
