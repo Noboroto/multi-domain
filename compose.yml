@@ -57,6 +57,12 @@ services:
     image: gcr.io/cadvisor/cadvisor:latest
     user: "0"
     container_name: cadvisor
+    command:
+    - --housekeeping_interval=30s
+    - --docker_only=true
+    - --store_container_labels=false
+    - --disable_metrics=percpu,sched,tcp,udp,hugetlb,referenced_memory,cpu_topology,resctrl
+    mem_limit: 256m
     expose:
     - 8080
     restart: unless-stopped
