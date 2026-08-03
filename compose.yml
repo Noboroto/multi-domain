@@ -42,7 +42,7 @@ services:
 
   portainer:
     container_name: portainer
-    image: portainer/portainer-ee:lts
+    image: portainer/portainer-ee:latest
     restart: always
     expose:
       - 8000
@@ -119,6 +119,8 @@ services:
 
 volumes:
   portainer_data:
+    external: true
+    name: multi-domain_portainer_data
 
 networks:
   default:
