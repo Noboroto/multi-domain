@@ -61,6 +61,7 @@ services:
       - cadvisor
 
   grafana:
+    networks: [default, observability]
     image: grafana/grafana@sha256:2d1f9ae67c1778d33e291d4c3c759cd8b650e67491f02533499eb950e075eeb5
     user: "0"
     environment:
@@ -73,3 +74,13 @@ services:
     restart: always
     depends_on:
       - prometheus
+
+# Shared, externally-created network that lets Grafana reach log backends owned by
+# other stacks. Each Coolify resource otherwise gets its own isolated network, which
+# silently broke the SPM Loki datasource after the migration: Grafana could no longer
+# resolve it and every alert rule bound to that datasource fired as a DatasourceError.
+# Declared as an ADDITIONAL network - the resource keeps its own default network so
+# the reverse proxy can still route to it.
+networks:
+  observability:
+    external: true
