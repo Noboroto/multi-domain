@@ -1,0 +1,75 @@
+# Monitoring stack, split out of compose.yml for Coolify.
+#
+# compose.yml keeps the legacy Nginx Proxy Manager + Portainer topology and stays
+# untouched as the rollback artefact. This file carries only the four monitoring
+# services.
+#
+# Notes for anyone editing this:
+#   * Host paths are absolute and deliberate. Coolify clones the repo into its own
+#     working directory, so a relative bind would point at an empty clone instead of
+#     the live 132 MB Grafana / 586 MB Prometheus data. Both directories are owned by
+#     1000:1000, which is why every service keeps `user: "0"`.
+#   * No `networks:` block. Coolify puts all services of a resource on one network and
+#     registers each compose SERVICE name as an alias, which is exactly what
+#     prometheus.yml scrapes (`cadvisor:8080`, `node-exporter:9100`). Do not rename
+#     these services.
+#   * Images are pinned by digest: Coolify pulls on every deploy, and a moved `latest`
+#     tag is how a monitoring stack silently loses its TSDB.
+services:
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor@sha256:3de2bd5203120b866d74a9b283b2ffb8ec382fbf9dc321814700c6ea6f44ec57
+    command:
+      - --housekeeping_interval=30s
+      - --docker_only=true
+      - --store_container_labels=false
+      - --disable_metrics=percpu,sched,tcp,udp,hugetlb,referenced_memory,cpu_topology,resctrl
+    user: "0"
+    privileged: true
+    mem_limit: 256m
+    expose:
+      - 8080
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    restart: unless-stopped
+
+  node-exporter:
+    image: prom/node-exporter@sha256:e9cff4fc67b1818f8c97adb115b9f12c9a54b533de86765d4a0effc01b357205
+    user: "0"
+    expose:
+      - 9100
+    restart: unless-stopped
+
+  prometheus:
+    image: prom/prometheus@sha256:e4254400b85610324913f0dc4acf92603d9984e7519414c5a12811aa6146acc3
+    user: "0"
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --storage.tsdb.retention.time=7d
+      - --storage.tsdb.retention.size=2GB
+    expose:
+      - 9090
+    volumes:
+      - /home/david0403/github/multi-domain/prometheus/data/config:/etc/prometheus
+      - /home/david0403/github/multi-domain/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - /home/david0403/github/multi-domain/prometheus/data/data:/prometheus
+    restart: unless-stopped
+    depends_on:
+      - cadvisor
+
+  grafana:
+    image: grafana/grafana@sha256:2d1f9ae67c1778d33e291d4c3c759cd8b650e67491f02533499eb950e075eeb5
+    user: "0"
+    environment:
+      - GF_SERVER_ROOT_URL=https://monitor.noboroto.id.vn
+      - GF_SERVER_SERVE_FROM_SUB_PATH=false
+    expose:
+      - 3000
+    volumes:
+      - /home/david0403/github/multi-domain/grafana/data:/var/lib/grafana
+    restart: always
+    depends_on:
+      - prometheus
