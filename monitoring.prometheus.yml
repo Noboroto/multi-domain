@@ -1,0 +1,43 @@
+# Scrape config for the Coolify `monitoring` resource on david-host only.
+#
+# prometheus.yml stays as it is because judge-server runs compose.yml from this same
+# repository and bind-mounts prometheus.yml; a job added there would follow the next
+# pull onto that host. Keep david-host-only jobs in this file.
+scrape_configs:
+- job_name: cadvisor
+  scrape_interval: 30s
+  static_configs:
+  - targets:
+    - cadvisor:8080
+- job_name: node
+  scrape_interval: 30s
+  static_configs:
+  - targets:
+    - node-exporter:9100
+# External uptime probes. They run from david-host on purpose, so a probe still
+# reports when the probed host (judge-server) is down as a whole.
+- job_name: blackbox-http
+  scrape_interval: 30s
+  metrics_path: /probe
+  params:
+    module: [http_2xx]
+  static_configs:
+  - targets:
+    - https://bxh.noboroto.id.vn/api/health
+    - https://bxh.noboroto.id.vn/
+    labels:
+      project: leaderboard
+      host: judge-server
+  - targets:
+    - https://judge.noboroto.id.vn/api/health
+    - https://judge.noboroto.id.vn/
+    labels:
+      project: judgehub
+      host: judge-server
+  relabel_configs:
+  - source_labels: [__address__]
+    target_label: __param_target
+  - source_labels: [__param_target]
+    target_label: instance
+  - target_label: __address__
+    replacement: blackbox-exporter:9115
