@@ -1,8 +1,9 @@
 # Monitoring stack, split out of compose.yml for Coolify.
 #
 # compose.yml keeps the legacy Nginx Proxy Manager + Portainer topology and stays
-# untouched as the rollback artefact. This file carries only the four monitoring
-# services.
+# untouched as the rollback artefact. This file carries only the monitoring
+# services. Prometheus reads monitoring.prometheus.yml, not prometheus.yml, which
+# judge-server still uses through compose.yml.
 #
 # Notes for anyone editing this:
 #   * Host paths are absolute and deliberate. Coolify clones the repo into its own
@@ -66,11 +67,22 @@ services:
       - 9090
     volumes:
       - /home/david0403/github/multi-domain/prometheus/data/config:/etc/prometheus
-      - /home/david0403/github/multi-domain/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - /home/david0403/github/multi-domain/monitoring.prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - /home/david0403/github/multi-domain/prometheus/data/data:/prometheus
     restart: unless-stopped
     depends_on:
       - cadvisor
+
+  # Probes the public sites listed in monitoring.prometheus.yml (job blackbox-http)
+  # with the image's built-in `http_2xx` module, so no config file is mounted.
+  # Reached only by Prometheus over the resource network; never published.
+  blackbox-exporter:
+    image: prom/blackbox-exporter@sha256:a50c4c0eda297baa1678cd4dc4712a67fdea713b832d43ce7fcc5f9bea05094d
+    cpus: 0.5
+    mem_limit: 64m
+    expose:
+      - 9115
+    restart: unless-stopped
 
   grafana:
     networks: [default, observability]
