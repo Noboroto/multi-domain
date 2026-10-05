@@ -84,6 +84,44 @@ services:
       - 9115
     restart: unless-stopped
 
+  # Shared Loki for container logs of apps on this host (config:
+  # monitoring/loki-config.yml, 30-day retention). Grafana reaches it over this
+  # resource's own network as `monitoring-loki`; it is never published.
+  monitoring-loki:
+    image: grafana/loki:3.6.11@sha256:44148ad243c07957113baea950ee5ba9b0c8eff8d7e38ff3cc1c0af705790945
+    cpus: 1
+    mem_limit: 384m
+    user: "10001"
+    command:
+      - -config.file=/etc/loki/config.yml
+    expose:
+      - 3100
+    volumes:
+      - /home/david0403/github/multi-domain/monitoring/loki-config.yml:/etc/loki/config.yml:ro
+      - /srv/appdata/monitoring/loki:/loki
+    restart: unless-stopped
+
+  # Ships logs of containers labelled `logging=david-alloy` to monitoring-loki
+  # (config: monitoring/config.alloy). The Docker socket is read-only; the
+  # storage path keeps read positions across recreates so logs are not shipped
+  # twice.
+  monitoring-alloy:
+    image: grafana/alloy:v1.18.0@sha256:491b0578c04983fd54fe99b587b6fab4404dc46d0dc16677bd6b00cc1140b308
+    cpus: 0.5
+    mem_limit: 192m
+    command:
+      - run
+      - --server.http.listen-addr=127.0.0.1:12345
+      - --storage.path=/var/lib/alloy/data
+      - /etc/alloy/config.alloy
+    volumes:
+      - /home/david0403/github/multi-domain/monitoring/config.alloy:/etc/alloy/config.alloy:ro
+      - /srv/appdata/monitoring/alloy:/var/lib/alloy/data
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    restart: unless-stopped
+    depends_on:
+      - monitoring-loki
+
   grafana:
     networks: [default, observability]
     image: grafana/grafana@sha256:2d1f9ae67c1778d33e291d4c3c759cd8b650e67491f02533499eb950e075eeb5
