@@ -67,6 +67,31 @@ loki.source.docker "apps" {
 loki.process "apps" {
   forward_to = [loki.write.shared.receiver]
 
+  // sab-store's frontend nginx writes its error_log to stderr, and that log
+  // repeats the raw request line, order code and query string included,
+  // whenever the upstream fails (every deploy). The order code is the order's
+  // secret, so only its stdout access log (JSON, codes already masked) is kept.
+  stage.match {
+    selector = "{project=\"sab-store\", service=\"frontend\", stream=\"stderr\"}"
+    action   = "drop"
+  }
+
+  // Safety net for any other nginx: its plain-text error_log repeats request
+  // lines, upstream URLs and referrers with their query strings (tokens,
+  // OAuth codes). Strip the query and blank the referrer.
+  stage.replace {
+    expression = `request: "[A-Z]+ [^"?\s]*(\?[^"\s]*)`
+    replace    = ""
+  }
+  stage.replace {
+    expression = `upstream: "[^"?]*(\?[^"]*)"`
+    replace    = ""
+  }
+  stage.replace {
+    expression = `referrer: "([^"]*)"`
+    replace    = ""
+  }
+
   // Health checks and probes are noise at one line every few seconds.
   stage.drop {
     expression = `"(?:path|uri|url)"\s*:\s*"/(?:api/)?(?:health|healthz|ready|livez)"`
