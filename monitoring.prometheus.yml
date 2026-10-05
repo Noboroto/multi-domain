@@ -34,6 +34,12 @@ scrape_configs:
     labels:
       project: judgehub
       host: judge-server
+  - targets:
+    - https://store.sabies.vn/api/settings
+    - https://store.sabies.vn/
+    labels:
+      project: sab-store
+      host: david-host
   relabel_configs:
   - source_labels: [__address__]
     target_label: __param_target

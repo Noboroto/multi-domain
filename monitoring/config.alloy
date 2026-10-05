@@ -1,0 +1,108 @@
+// Container logs on david-host -> the shared Loki of the `monitoring` resource.
+//
+// Opt-in only: a container is read when it carries the label
+// `logging=david-alloy`. Its stream labels come from two more labels set by the
+// app's own compose file:
+//   logging.project  -> project   (e.g. sab-store)
+//   logging.service  -> service   (e.g. backend, frontend)
+// plus host="david-host" and stream (stdout/stderr). Fields with many values
+// (ip, path, route, ms, request ids) stay in the log line and are read with
+// `| json` at query time; only `level`, `type` and `event`, which have a handful
+// of values each, are promoted to labels.
+
+discovery.docker "apps" {
+  host             = "unix:///var/run/docker.sock"
+  refresh_interval = "5s"
+
+  filter {
+    name   = "label"
+    values = ["logging=david-alloy"]
+  }
+}
+
+discovery.relabel "apps" {
+  targets = discovery.docker.apps.targets
+
+  // A container that sets the opt-in label but no project is skipped, so a
+  // stray label can never create an unlabelled stream.
+  rule {
+    source_labels = ["__meta_docker_container_label_logging_project"]
+    regex         = ".+"
+    action        = "keep"
+  }
+  rule {
+    source_labels = ["__meta_docker_container_label_logging_project"]
+    target_label  = "project"
+  }
+  rule {
+    source_labels = ["__meta_docker_container_label_logging_service"]
+    target_label  = "service"
+  }
+  rule {
+    target_label = "host"
+    replacement  = "david-host"
+  }
+}
+
+// The log stream (stdout/stderr) is only known per entry, so it is set here
+// rather than in discovery.relabel.
+discovery.relabel "stream" {
+  targets = []
+
+  rule {
+    source_labels = ["__meta_docker_container_log_stream"]
+    target_label  = "stream"
+  }
+}
+
+loki.source.docker "apps" {
+  host             = "unix:///var/run/docker.sock"
+  targets          = discovery.relabel.apps.output
+  relabel_rules    = discovery.relabel.stream.rules
+  labels           = {}
+  forward_to       = [loki.process.apps.receiver]
+  refresh_interval = "5s"
+}
+
+loki.process "apps" {
+  forward_to = [loki.write.shared.receiver]
+
+  // Health checks and probes are noise at one line every few seconds.
+  stage.drop {
+    expression = `"(?:path|uri|url)"\s*:\s*"/(?:api/)?(?:health|healthz|ready|livez)"`
+  }
+
+  // Personal data that reaches logs through error messages is masked on every
+  // stream: email addresses and Vietnamese mobile numbers.
+  stage.replace {
+    expression = `([A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,})`
+    replace    = ":email"
+  }
+  stage.replace {
+    expression = `\b((?:\+?84|0)(?:3|5|7|8|9)[0-9]{8})\b`
+    replace    = ":phone"
+  }
+
+  // JSON lines only; plain-text lines are forwarded untouched.
+  stage.match {
+    selector = "{host=\"david-host\"} |~ \"^{\""
+
+    stage.json {
+      expressions = { level = "level", type = "type", event = "event", time = "time" }
+    }
+    stage.labels {
+      values = { level = "", type = "", event = "" }
+    }
+    stage.timestamp {
+      source            = "time"
+      format            = "RFC3339Nano"
+      action_on_failure = "skip"
+    }
+  }
+}
+
+loki.write "shared" {
+  endpoint {
+    url = "http://monitoring-loki:3100/loki/api/v1/push"
+  }
+}
