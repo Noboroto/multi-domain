@@ -1,0 +1,48 @@
+# Mail stack (Stalwart) for noboroto.id.vn, deployed by Coolify as resource `mail`.
+#
+# Notes for anyone editing this:
+#   * Host paths are absolute and deliberate. Coolify renames named volumes to
+#     `<uuid>_<name>`, which would detach the server from its mailboxes. The three
+#     directories under /srv/appdata/stalwart are owned by 2000:2000 (the image's
+#     `stalwart` user); etc/config.json holds only the RocksDB DataStore pointer,
+#     everything else lives in the store and is changed through the API/stalwart-cli.
+#   * Mail ports are published straight on the host, not through Traefik, so Docker's
+#     DNAT keeps the real client IP for SPF, rate limits and auto-ban. Only HTTP 8080
+#     (web admin, JMAP, Bulwark Lite at /webmail/) goes through Traefik, which Coolify
+#     routes as https://mail.noboroto.id.vn.
+#   * Outbound mail is relayed through Brevo on 587 (CloudFly blocks outbound 25).
+#     The relay route reads BREVO_SMTP_KEY from the environment; the value is set in
+#     Coolify, never in this file.
+#   * The image is pinned by digest: Coolify pulls on every deploy, and Stalwart 0.x
+#     minor upgrades can migrate the store in place.
+services:
+  stalwart:
+    image: stalwartlabs/stalwart:v0.16.27@sha256:c429b311c93db5606598abc1c68225a85a6953183848ae01bee9c6a98885836c
+    cpus: 1
+    mem_limit: 768m
+    environment:
+      # Fixed administrator credential, user:password, from 1Password
+      # "stalwart-mail (david-host)".
+      - STALWART_RECOVERY_ADMIN=${STALWART_RECOVERY_ADMIN}
+      - BREVO_SMTP_KEY=${BREVO_SMTP_KEY}
+    ports:
+      - "25:25"
+      - "465:465"
+      - "587:587"
+      - "993:993"
+    expose:
+      - 8080
+    volumes:
+      - /srv/appdata/stalwart/etc:/etc/stalwart
+      - /srv/appdata/stalwart/data:/var/lib/stalwart
+      - /srv/appdata/stalwart/logs:/var/log/stalwart
+      - /etc/localtime:/etc/localtime:ro
+    labels:
+      - logging=david-alloy
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8080/healthz/live"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    restart: unless-stopped
