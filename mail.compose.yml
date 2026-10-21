@@ -11,8 +11,9 @@
 #     (web admin, JMAP, Bulwark Lite at /webmail/) goes through Traefik, which Coolify
 #     routes as https://mail.noboroto.id.vn.
 #   * Outbound mail is relayed through Brevo on 587 (CloudFly blocks outbound 25).
-#     The relay route reads BREVO_SMTP_KEY from the environment; the value is set in
-#     Coolify, never in this file.
+#     The relay route reads BREVO_SMTP_KEY and the Cloudflare DnsServer (ACME DNS-01,
+#     DKIM records) reads CLOUDFLARE_API_TOKEN from the environment; values are set
+#     in Coolify, never in this file.
 #   * The image is pinned by digest: Coolify pulls on every deploy, and Stalwart 0.x
 #     minor upgrades can migrate the store in place.
 services:
@@ -25,6 +26,7 @@ services:
       # "stalwart-mail (david-host)".
       - STALWART_RECOVERY_ADMIN=${STALWART_RECOVERY_ADMIN}
       - BREVO_SMTP_KEY=${BREVO_SMTP_KEY}
+      - CLOUDFLARE_API_TOKEN=${CLOUDFLARE_API_TOKEN}
     ports:
       - "25:25"
       - "465:465"
